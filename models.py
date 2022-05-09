@@ -21,10 +21,32 @@ def setup_db(app, database_path=database_path):
     db.init_app(app)
     db.create_all()
 
+''' 
+Adding in initial mock data for testing
+'''
+def mock_data_insert():
+    mock_actors = [
+        ('Grace Hopper', '21', 'female'),
+        ('Alan Turing', '34', 'male'),
+        ('Linus Torvalds', '52', 'male'),
+        ('Ada Lovelace', '28', 'female'),
+    ]
+    for actor_data in mock_actors:
+        mock_actor = Actor(
+            name=actor_data[0],
+            age=actor_data[1],
+            gender=actor_data[2]
+        )
+        mock_actor.insert()
+
+    mock_movies = ['Gladiator', 'The Dark Knight', 'Forrest Gump', 'Moana']
+    for movie_data in mock_movies:
+        mock_movie = Movie(title=movie_data)
+        mock_movie.insert()
+
 '''
 Table to support the Many-to-Many relationship
 '''
-
 Show = db.Table('show',
     Column('movie_id', Integer, db.ForeignKey('movies.id'), primary_key=True),
     Column('actor_id', Integer, db.ForeignKey('actors.id'), primary_key=True)
@@ -40,7 +62,7 @@ class Movie(db.Model):
   id = Column(Integer, primary_key=True)
   title = Column(String(120))
   release_date = Column(Date, default=date.today)
-  actors = db.relationship('Actor', backref='show', lazy=True)
+  actors = db.relationship('Actor', secondary=Show, backref=db.backref('show', lazy=True))
 
 
   def __init__(self, title, release_date):
@@ -77,7 +99,7 @@ class Actor(db.Model):
 
   id = Column(Integer, primary_key=True)
   name = Column(String(120))
-  age = Column(Date, default=date.today)
+  age = Column(Integer)
   gender = Column(String(50))
 
   def __init__(self, title, release_date):
