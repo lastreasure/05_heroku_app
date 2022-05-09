@@ -1,7 +1,10 @@
 import os
-from flask import Flask
+from flask import Flask, jsonify, abort
 from models import setup_db
 from flask_cors import CORS
+import sys
+
+from models import setup_db, Actor, Movie
 
 def create_app(test_config=None):
 
@@ -9,17 +12,40 @@ def create_app(test_config=None):
     setup_db(app)
     CORS(app)
 
-    @app.route('/')
-    def get_greeting():
-        excited = os.environ['EXCITED']
-        greeting = "Hello" 
-        if excited == 'true': 
-            greeting = greeting + "!!!!! You are doing great in this Udacity project."
-        return greeting
+    # Using the after_request decorator to set Access-Control-Allow
+    @app.after_request
+    def after_request(response):
+        response.headers.add('Access-Control-Allow-Headers',
+                             'Content-Type, Authorization')
+        response.headers.add('Access-Control-Allow-Headers',
+                             'GET, POST, PATCH, DELETE, OPTIONS')
+        return response
 
-    @app.route('/coolkids')
-    def be_cool():
-        return "Be cool, man, be coooool! You're almost a FSND grad!"
+    @app.route('/')
+    def index():
+        return jsonify({
+            'message': 'Hello this is the Casting Agency Models Company website',
+            'success': True,
+        }), 200
+
+
+    @app.route('/actors')
+    def get_actors():
+        try:
+            actors_list = Actor.query.all()
+
+            if actors_list == 0:
+                abort(404)
+
+            return jsonify({
+            'success': True,
+            'actors': [actor.format() for actor in actors_list]
+        }), 200
+
+        except Exception as err:
+            print(f'Error: {err}')
+            print(sys.exc_info())
+            abort(500)
 
     return app
 
