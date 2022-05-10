@@ -28,7 +28,7 @@ def create_app(test_config=None):
             'success': True,
         }), 200
 
-
+    # GET actors endpoint
     @app.route('/actors')
     def get_actors():
         try:
@@ -40,6 +40,25 @@ def create_app(test_config=None):
             return jsonify({
             'success': True,
             'actors': [actor.format() for actor in actors_list]
+        }), 200
+
+        except Exception as err:
+            print(f'Error: {err}')
+            print(sys.exc_info())
+            abort(500)
+
+    # GET movies endpoint
+    @app.route('/movies')
+    def get_movies():
+        try:
+            movies_list = Movie.query.all()
+
+            if movies_list == 0:
+                abort(404)
+
+            return jsonify({
+            'success': True,
+            'movies': [movie.format() for movie in movies_list]
         }), 200
 
         except Exception as err:
