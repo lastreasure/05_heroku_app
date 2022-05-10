@@ -1,5 +1,6 @@
 import os
-from flask import Flask, jsonify, abort
+from xxlimited import new
+from flask import Flask, jsonify, abort, request
 from models import setup_db
 from flask_cors import CORS
 import sys
@@ -65,6 +66,43 @@ def create_app(test_config=None):
             print(f'Error: {err}')
             print(sys.exc_info())
             abort(500)
+
+    # GET actors endpoint
+    @app.route('/actors', methods=['POST'])
+    def create_actor():
+
+        # Get new actor fields
+        request_body = request.get_json()
+        new_actor_name = request_body.get('name')
+        new_actor_age = request_body.get('age')
+        new_actor_gender = request_body.get('gender')
+
+        # Check for empty fields
+        if new_actor_name == None or new_actor_name == "":
+            abort(400)
+
+        try:
+            # Create new actor
+            new_actor = Actor(
+                name=new_actor_name,
+                age=new_actor_age,
+                gender=new_actor_gender,
+            )
+
+            # Add the new actor
+            new_actor.insert()
+
+            return jsonify({
+                'success': True,
+                'actor': new_actor.format()
+            }), 201
+
+        except Exception as err:
+            print(f'Error: {err}')
+            print(sys.exc_info())
+            abort(500)
+
+
 
     return app
 
