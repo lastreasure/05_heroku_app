@@ -154,7 +154,9 @@ def create_app(test_config=None):
                 'delete': actor.id
             }), 200
 
-        except:
+        except Exception as err:
+            print(f'Error: {err}')
+            print(sys.exc_info())
             abort(500)
 
     # DELETE movies endpoint
@@ -176,10 +178,47 @@ def create_app(test_config=None):
                 'delete': movie.id
             }), 200
 
-        except:
+        except Exception as err:
+            print(f'Error: {err}')
+            print(sys.exc_info())
             abort(500)
-            
+
     # PATCH actors endpoint
+    @app.route('/actors/<int:id>', methods=['PATCH'])
+    def update_actor(id):
+
+        # Get the drink to be updated
+        actor = Actor.query.get(id)
+
+        # Check if drink exists
+        if actor is None:
+            abort(404)
+
+        try:
+            # Get data to update
+            request_body = request.get_json()
+
+            if 'name' in request_body:
+                actor.name = request_body['name']
+
+            if 'age' in request_body:
+                actor.age = request_body['age']
+
+            if 'gender' in request_body:
+                actor.gender = request_body['gender']
+
+            # Update the drink
+            actor.update()
+
+            return jsonify({
+                'success': True,
+                'updated': actor.format()
+            }), 200
+
+        except Exception as err:
+            print(f'Error: {err}')
+            print(sys.exc_info())
+            abort(500)
 
     # PATCH movies endpoint
 
