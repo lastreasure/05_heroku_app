@@ -135,6 +135,33 @@ def create_app(test_config=None):
             print(sys.exc_info())
             abort(500)
 
+    # DELETE actors endpoint
+    @app.route('/actors/<int:id>', methods=['DELETE'])
+    def delete_actor(id):
+        # Get the drink to be deleted
+        actor = Actor.query.get(id)
+
+        # Check if drink exists
+        if actor is None:
+            abort(404)
+
+        try:
+            # Delete drink
+            actor.delete()
+
+            return jsonify({
+                'success': True,
+                'delete': actor.id
+            }), 200
+
+        except:
+            abort(500)
+
+    # DELETE movies endpoint
+    
+    # PATCH actors endpoint
+
+    # PATCH movies endpoint
 
 
     return app
