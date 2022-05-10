@@ -102,9 +102,10 @@ class Actor(db.Model):
   age = Column(Integer)
   gender = Column(String(50))
 
-  def __init__(self, title, release_date):
-    self.title = title.title
-    self.release_date = release_date
+  def __init__(self, name, age=None, gender=None):
+    self.name = name
+    self.age = age
+    self.gender = gender
 
   def insert(self):
       db.session.add(self)
