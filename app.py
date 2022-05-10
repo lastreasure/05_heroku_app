@@ -221,7 +221,39 @@ def create_app(test_config=None):
             abort(500)
 
     # PATCH movies endpoint
+    @app.route('/movies/<int:id>', methods=['PATCH'])
+    def update_movie(id):
 
+        # Get the drink to be updated
+        movie = Movie.query.get(id)
+
+        # Check if drink exists
+        if movie is None:
+            abort(404)
+
+        try:
+            # Get data to update
+            request_body = request.get_json()
+
+            if 'title' in request_body:
+                movie.title = request_body['title']
+
+            if 'release_date' in request_body:
+                movie.release_date = request_body['release_date']
+
+
+            # Update the drink
+            movie.update()
+
+            return jsonify({
+                'success': True,
+                'updated': movie.format()
+            }), 200
+
+        except Exception as err:
+            print(f'Error: {err}')
+            print(sys.exc_info())
+            abort(500)
 
     return app
 
