@@ -84,7 +84,7 @@ class Movie(db.Model):
       return {
           'id': self.id,
           'title': self.title,
-          'releasedate': self.release_date
+          'release_date': self.release_date
       }
 
   def __repr__(self):

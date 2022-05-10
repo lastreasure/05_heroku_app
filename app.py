@@ -67,7 +67,7 @@ def create_app(test_config=None):
             print(sys.exc_info())
             abort(500)
 
-    # GET actors endpoint
+    # POST actors endpoint
     @app.route('/actors', methods=['POST'])
     def create_actor():
 
@@ -95,6 +95,39 @@ def create_app(test_config=None):
             return jsonify({
                 'success': True,
                 'actor': new_actor.format()
+            }), 201
+
+        except Exception as err:
+            print(f'Error: {err}')
+            print(sys.exc_info())
+            abort(500)
+
+    # POST movies endpoint
+    @app.route('/movies', methods=['POST'])
+    def create_movie():
+
+        # Get new movie fields
+        request_body = request.get_json()
+        new_movie_title = request_body.get('title')
+        new_movie_release_date = request_body.get('release_date')
+
+        # Check for empty fields
+        if new_movie_title == None or new_movie_title == "" or new_movie_release_date == None or new_movie_release_date == "":
+            abort(400)
+
+        try:
+            # Create new movie
+            new_movie = Movie(
+                title=new_movie_title,
+                release_date=new_movie_release_date,
+            )
+
+            # Add the new movie
+            new_movie.insert()
+
+            return jsonify({
+                'success': True,
+                'actor': new_movie.format()
             }), 201
 
         except Exception as err:
