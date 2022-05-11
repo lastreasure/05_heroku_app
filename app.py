@@ -7,6 +7,10 @@ import sys
 
 from models import setup_db, Actor, Movie
 
+AUTH0_DOMAIN = os.getenv('AUTH0_DOMAIN')
+ALGORITHMS = os.getenv('ALGORITHMS')
+API_AUDIENCE = os.getenv('API_AUDIENCE')
+
 def create_app(test_config=None):
 
     app = Flask(__name__)
@@ -24,6 +28,10 @@ def create_app(test_config=None):
 
     @app.route('/')
     def index():
+        print("hi")
+        print(AUTH0_DOMAIN)
+        print(ALGORITHMS)
+        print(API_AUDIENCE)
         return jsonify({
             'message': 'Hello this is the Casting Agency Models Company website',
             'success': True,
