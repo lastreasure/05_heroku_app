@@ -4,13 +4,9 @@ from flask import Flask, jsonify, abort, request
 from models import setup_db
 from flask_cors import CORS
 import sys
+from auth import AuthError, requires_auth
 
 from models import setup_db, Actor, Movie
-
-AUTH0_DOMAIN = os.getenv('AUTH0_DOMAIN')
-ALGORITHMS = os.getenv('ALGORITHMS')
-API_AUDIENCE = os.getenv('API_AUDIENCE')
-
 def create_app(test_config=None):
 
     app = Flask(__name__)
@@ -28,10 +24,6 @@ def create_app(test_config=None):
 
     @app.route('/')
     def index():
-        print("hi")
-        print(AUTH0_DOMAIN)
-        print(ALGORITHMS)
-        print(API_AUDIENCE)
         return jsonify({
             'message': 'Hello this is the Casting Agency Models Company website',
             'success': True,
@@ -39,7 +31,8 @@ def create_app(test_config=None):
 
     # GET actors endpoint
     @app.route('/actors')
-    def get_actors():
+    @requires_auth('get:actors')
+    def get_actors(jwt):
         try:
             actors_list = Actor.query.all()
 
@@ -58,7 +51,8 @@ def create_app(test_config=None):
 
     # GET movies endpoint
     @app.route('/movies')
-    def get_movies():
+    @requires_auth('get:movies')
+    def get_movies(jwt):
         try:
             movies_list = Movie.query.all()
 
@@ -77,7 +71,8 @@ def create_app(test_config=None):
 
     # POST actors endpoint
     @app.route('/actors', methods=['POST'])
-    def create_actor():
+    @requires_auth('post:actors')
+    def create_actor(jwt):
 
         # Get new actor fields
         request_body = request.get_json()
@@ -112,7 +107,8 @@ def create_app(test_config=None):
 
     # POST movies endpoint
     @app.route('/movies', methods=['POST'])
-    def create_movie():
+    @requires_auth('post:movies')
+    def create_movie(jwt):
 
         # Get new movie fields
         request_body = request.get_json()
@@ -145,7 +141,8 @@ def create_app(test_config=None):
 
     # DELETE actors endpoint
     @app.route('/actors/<int:id>', methods=['DELETE'])
-    def delete_actor(id):
+    @requires_auth('delete:actors')
+    def delete_actor(jwt, id):
         # Get the drink to be deleted
         actor = Actor.query.get(id)
 
@@ -169,7 +166,8 @@ def create_app(test_config=None):
 
     # DELETE movies endpoint
     @app.route('/movies/<int:id>', methods=['DELETE'])
-    def delete_movie(id):
+    @requires_auth('delete:movies')
+    def delete_movie(jwt, id):
         # Get the drink to be deleted
         movie = Movie.query.get(id)
 
@@ -193,7 +191,8 @@ def create_app(test_config=None):
 
     # PATCH actors endpoint
     @app.route('/actors/<int:id>', methods=['PATCH'])
-    def update_actor(id):
+    @requires_auth('patch:actors')
+    def update_actor(jwt, id):
 
         # Get the drink to be updated
         actor = Actor.query.get(id)
@@ -230,7 +229,8 @@ def create_app(test_config=None):
 
     # PATCH movies endpoint
     @app.route('/movies/<int:id>', methods=['PATCH'])
-    def update_movie(id):
+    @requires_auth('patch:movies')
+    def update_movie(jwt, id):
 
         # Get the drink to be updated
         movie = Movie.query.get(id)
@@ -268,4 +268,5 @@ def create_app(test_config=None):
 app = create_app()
 
 if __name__ == '__main__':
+    app.debug = True
     app.run()
