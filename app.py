@@ -1,3 +1,4 @@
+import json
 import os
 from xxlimited import new
 from flask import Flask, jsonify, abort, request
@@ -131,7 +132,7 @@ def create_app(test_config=None):
 
             return jsonify({
                 'success': True,
-                'actor': new_movie.format()
+                'movie': new_movie.format()
             }), 201
 
         except Exception as err:
@@ -205,13 +206,16 @@ def create_app(test_config=None):
             # Get data to update
             request_body = request.get_json()
 
-            if 'name' in request_body:
+            if ('name' not in request_body and 'age' not in request_body and 'gender' not in request_body):
+                abort(400)
+
+            if 'name' in request_body and request_body['name'] != "":
                 actor.name = request_body['name']
 
-            if 'age' in request_body:
+            if 'age' in request_body and request_body['age'] != "":
                 actor.age = request_body['age']
 
-            if 'gender' in request_body:
+            if 'gender' in request_body and request_body['gender'] != "":
                 actor.gender = request_body['gender']
 
             # Update the drink
@@ -243,12 +247,14 @@ def create_app(test_config=None):
             # Get data to update
             request_body = request.get_json()
 
-            if 'title' in request_body:
+            if ('title' not in request_body and 'release_date' not in request_body):
+                abort(400)
+
+            if 'title' in request_body and request_body['title'] != "":
                 movie.title = request_body['title']
-
-            if 'release_date' in request_body:
+        
+            if 'release_date' in request_body and request_body['release_date'] != "":
                 movie.release_date = request_body['release_date']
-
 
             # Update the drink
             movie.update()
