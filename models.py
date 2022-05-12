@@ -24,25 +24,33 @@ def setup_db(app, database_path=database_path):
 ''' 
 Adding in initial mock data for testing
 '''
-def mock_data_insert():
-    mock_actors = [
-        ('Grace Hopper', '21', 'female'),
-        ('Alan Turing', '34', 'male'),
-        ('Linus Torvalds', '52', 'male'),
-        ('Ada Lovelace', '28', 'female'),
-    ]
-    for actor_data in mock_actors:
-        mock_actor = Actor(
-            name=actor_data[0],
-            age=actor_data[1],
-            gender=actor_data[2]
-        )
-        mock_actor.insert()
+# def mock_data_insert():
+#     mock_actors = [
+#         ('Grace Hopper', '21', 'female'),
+#         ('Alan Turing', '34', 'male'),
+#         ('Linus Torvalds', '52', 'male'),
+#         ('Ada Lovelace', '28', 'female'),
+#     ]
+#     for actor_data in mock_actors:
+#         mock_actor = Actor(
+#             name=actor_data[0],
+#             age=actor_data[1],
+#             gender=actor_data[2]
+#         )
+#         mock_actor.insert()
 
-    mock_movies = ['Gladiator', 'The Dark Knight', 'Forrest Gump', 'Moana']
-    for movie_data in mock_movies:
-        mock_movie = Movie(title=movie_data)
-        mock_movie.insert()
+#     mock_movies = [
+#         ('Gladiator', '01-01-2001'),
+#         ('The Dark Knight', '02-02-2002'),
+#         ('Forrest Gump', '03-03-2003'),
+#         ('Moana', '04-04-2004'),
+#     ]
+#     for movie_data in mock_movies:
+#         mock_movie = Movie(
+#           title=movie_data[0],
+#           release_date=movie_data[1]
+#         )
+#         mock_movie.insert()
 
 '''
 Table to support the Many-to-Many relationship
